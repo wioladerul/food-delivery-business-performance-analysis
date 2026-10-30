@@ -1,19 +1,12 @@
 # FOOD DELIVERY BUSINESS PERFORMANCE ANALYSIS 
 
 ## Project Overview
-Proyek ini menganalisis kinerja bisnis platform layanan pesan-antar makanan (food delivery) menggunakan SQL dan PostgreSQL. Analisis mencakup tren jumlah pesanan dan nilai transaksi makanan, kontribusi restoran mitra dan kota, perilaku pelanggan, performa jenis masakan (cuisine), serta distribusi status pesanan.
+Proyek ini menganalisis kinerja bisnis platform layanan pesan-antar makanan (food delivery) menggunakan SQL dan PostgreSQL. Analisis mencakup tren jumlah pesanan dan nilai transaksi makanan, kontribusi restoran mitra dan kota berdasarkan lokasi restoran, perilaku pelanggan, performa jenis masakan (cuisine), distribusi status pesanan, serta perbandingan rating dan kinerja transaksi restoran.
 
 Dengan memanfaatkan lima tabel yang saling berelasi, proyek ini menggunakan SQL untuk memeriksa kualitas data, mengeksplorasi karakteristik dataset, dan menjawab delapan pertanyaan bisnis. Hasil analisis digunakan untuk mengidentifikasi pola transaksi dan temuan yang relevan sebagai dasar pertimbangan dalam pengambilan keputusan bisnis platform.
 
 ## Analysis Objectives
-Proyek ini bertujuan untuk:
-- Mengidentifikasi tren jumlah pesanan dan nilai transaksi makanan dari waktu ke waktu.
-- Mengetahui restoran dan kota dengan nilai transaksi makanan tertinggi.
-- Memahami proporsi pelanggan berulang serta kontribusinya terhadap total pesanan.
-- Mengidentifikasi jenis masakan dengan kontribusi transaksi terbesar.
-- Menganalisis distribusi status pesanan dan tingkat pembatalan berdasarkan kota restoran.
-- Membandingkan performa restoran berdasarkan rating, jenis masakan, dan lokasi.
-- Mengidentifikasi restoran dengan proporsi pesanan terlambat (Late) tertinggi.
+Analisis ini bertujuan untuk mengevaluasi kinerja bisnis platform layanan pesan-antar makanan melalui pengolahan dan analisis data transaksi menggunakan SQL. Fokus analisis mencakup identifikasi tren pemesanan dan nilai transaksi makanan, kontribusi restoran mitra dan wilayah operasional, perilaku pemesanan pelanggan, serta performa jenis masakan. Selain itu, analisis dilakukan untuk mengevaluasi distribusi status pesanan, tingkat pembatalan, dan proporsi keterlambatan pengiriman, serta membandingkan rating restoran dengan jumlah pesanan dan nilai transaksi makanan. Hasil analisis diharapkan dapat memberikan gambaran mengenai kinerja bisnis, mengidentifikasi pola dan area yang memerlukan perhatian lebih lanjut, serta menghasilkan insight berbasis data sebagai bahan pertimbangan dalam pengambilan keputusan bisnis.
 
 ## Dataset Overview
 Dataset yang digunakan berasal dari Kaggle: [Dataset Food Delivery](https://www.kaggle.com/datasets/nudratabbas/sql-practice-dataset-2-medium-queries)
@@ -143,3 +136,108 @@ Catatan: Mei 2024 hanya mencakup data hingga tanggal 15 Mei.
 - Pelanggan berulang mencakup 73.91% dari total pelanggan yang memiliki pesanan berstatus Delivered atau Late, yaitu sebanyak 1000 pelanggan, dan berkontribusi sebesar 89.58% terhadap total pesanan dengan kedua status tersebut, atau sebanyak 3035 pesanan.
 - Sebaliknya, pelanggan yang hanya melakukan satu pesanan mencakup 26.09% atau 353 pelanggan, dengan kontribusi sebesar 10.42% terhadap total pesanan berstatus Delivered atau Late, yaitu sebanyak 353 pesanan.
 - Temuan ini menunjukkan bahwa pelanggan berulang mendominasi jumlah pelanggan sekaligus memberikan kontribusi terbesar terhadap total pesanan berstatus Delivered dan Late selama periode analisis.
+
+## Cuisine Performance
+**Business Performance**: Jenis masakan (cuisine) mana yang memiliki nilai transaksi makanan tertinggi, dan bagaimana perbandingannya dengan jumlah restoran serta jumlah pesanan?
+
+**Analysis Method**: Data transaksi dikelompokkan berdasarkan jenis masakan. Analisis membandingkan jumlah restoran, jumlah pesanan, total nilai transaksi makanan, serta persentase kontribusi setiap jenis masakan terhadap keseluruhan nilai transaksi.
+
+**Output**:
+| cuisine | total_restoran | total_pesanan | total_nilai_transaksi | kontribusi_transaksi_persen |
+|:---|---:|---:|---:|---:|
+| Thai | 26 | 759 | 86894.49 | 22.97 |
+| Indian | 22 | 607 | 69969.33 | 18.49 |
+| Mexican | 20 | 557 | 62341.32 | 16.48 |
+| American | 19 | 584 | 62318.18 | 16.47 |
+| Italian | 20 | 545 | 59408.08 | 15.70 |
+| Chinese | 13 | 336 | 37418.92 | 9.89 |
+
+**Key Insights**:
+- Thai menjadi jenis masakan dengan nilai transaksi makanan tertinggi sebesar 86894.49 atau 22.97% dari total nilai transaksi makanan, didukung oleh 26 restoran dan 759 pesanan, yang juga merupakan jumlah restoran dan pesanan terbanyak dibandingkan jenis masakan lainnya.
+- Indian menempati posisi kedua dengan nilai transaksi makanan sebesar 69969.33 atau 18.49%, didukung oleh 22 restoran dan 607 pesanan.
+- American menghasilkan nilai transaksi makanan sebesar 62318.18 dari 584 pesanan dan 19 restoran, sedangkan Mexican mencatat nilai transaksi sedikit lebih tinggi, yaitu 62341.32, meskipun memiliki jumlah pesanan lebih sedikit (557 pesanan) dan jumlah restoran lebih banyak (20 restoran).
+- Secara keseluruhan, Thai memberikan kontribusi nilai transaksi makanan terbesar sekaligus memiliki jumlah restoran dan pesanan tertinggi. Namun, perbandingan antara American dan Mexican menunjukkan bahwa jumlah pesanan yang lebih tinggi tidak selalu menghasilkan nilai transaksi makanan yang lebih besar.
+
+## Order Status Distribution & Cancellation Rates
+**Business Question**: Bagaimana distribusi status pesanan, dan kota mana yang memiliki tingkat pembatalan pesanan tertinggi dan terendah berdasarkan lokasi restoran?
+
+**Analysis Method**: Analisis dilakukan dalam dua bagian. Pertama, menghitung jumlah dan persentase pesanan berdasarkan status. Kedua, menghitung tingkat pembatalan setiap kota restoran dengan membandingkan jumlah pesanan Cancelled terhadap seluruh pesanan di kota tersebut.
+
+**Output**:
+Distribusi status pesanan
+| status | total_pesanan | persentase_pesanan |
+|:---|---:|---:|
+| Delivered | 1717 | 34.34 |
+| Late | 1671 | 33.42 |
+| Cancelled | 1612 | 32.24 |
+
+Tingkat pembatalan pesanan berdasarkan kota restoran
+| kota_restoran | total_pesanan | total_pesanan_dibatalkan | tingkat_pembatalan_persen |
+|:---|---:|---:|---:|
+| Liverpool | 947 | 316 | 33.37 |
+| Leeds | 1060 | 352 | 33.21 |
+| London | 721 | 234 | 32.45 |
+| Birmingham | 694 | 225 | 32.42 |
+| Manchester | 790 | 255 | 32.28 |
+| Bristol | 788 | 230 | 29.19 |
+
+**Key Insights**: 
+- Dari total 5000 pesanan, status Delivered memiliki proporsi terbesar, yaitu 34.34% atau 1717 pesanan, diikuti Late sebesar 33.42% atau 1671 pesanan, dan Cancelled sebesar 32.24% atau 1612 pesanan. Distribusi ketiga status tersebut relatif merata.
+- Liverpool menjadi kota dengan tingkat pembatalan pesanan tertinggi berdasarkan lokasi restoran, yaitu 33.37% atau 316 pesanan dibatalkan dari total 947 pesanan.
+- Bristol mencatat tingkat pembatalan pesanan terendah, yaitu 29.19% atau 230 pesanan dibatalkan dari total 788 pesanan.
+- Meskipun Leeds memiliki jumlah pembatalan terbanyak, yaitu 352 pesanan, tingkat pembatalannya sebesar 33.21% masih lebih rendah dibandingkan Liverpool. Hal ini menunjukkan bahwa jumlah pesanan yang dibatalkan tidak selalu mencerminkan tingkat pembatalan tertinggi, karena tingkat pembatalan dihitung berdasarkan proporsi pesanan yang dibatalkan terhadap total pesanan di masing-masing kota.
+
+## Restaurant Performance 
+**Business Question**: Apakah restoran dengan rating tertinggi juga memiliki jumlah pesanan dan nilai transaksi makanan tertinggi?
+
+**Analysis Method**: Menghitung jumlah pesanan dan total nilai transaksi makanan setiap restoran dari pesanan berstatus Delivered dan Late. Menggunakan fungsi RANK() untuk menentukan peringkat restoran secara terpisah berdasarkan rating, jumlah pesanan, dan nilai transaksi makanan. Hasilnya difilter untuk menampilkan restoran yang menempati peringkat pertama pada minimal satu dari ketiga indikator tersebut, kemudian dibandingkan untuk mengetahui apakah restoran dengan rating tertinggi juga memiliki jumlah pesanan dan nilai transaksi makanan tertinggi.
+
+**Output**:
+| restaurant_id | rating | total_pesanan | total_nilai_transaksi | peringkat_rating | peringkat_pesanan | peringkat_transaksi |
+|:---|---:|---:|---:|---:|---:|---:|
+| R115 | 5.0 | 30 | 3757.24 | 1 | 46 | 22 |
+| R020 | 5.0 | 24 | 2525.61 | 1 | 88 | 98 |
+| R030 | 5.0 | 24 | 2254.77 | 1 | 88 | 109 |
+| R096 | 4.0 | 43 | 4807.87 | 59 | 1 | 2 |
+| R073 | 3.3 | 38 | 5169.48 | 101 | 4 | 1 |
+
+**Key Insights**:
+- R115, R030, dan R020 sama-sama memiliki rating tertinggi, yaitu 5.0. Namun, ketiganya memiliki jumlah pesanan dan nilai transaksi makanan yang berbeda, serta tidak menempati posisi tertinggi pada kedua indikator tersebut.
+- R096 mencatat jumlah pesanan tertinggi, yaitu 43 pesanan, dengan rating 4.0 dan nilai transaksi makanan sebesar 4807.87.
+- R073 menghasilkan nilai transaksi makanan tertinggi sebesar 5169.48 dari 38 pesanan, meskipun memiliki rating 3.3.
+- Hasil analisis menunjukkan bahwa restoran dengan rating tertinggi tidak sekaligus memiliki jumlah pesanan maupun nilai transaksi makanan tertinggi. Restoran dengan rating lebih rendah juga dapat mencatat performa transaksi yang lebih tinggi.
+
+## Restaurants with the Highest Late Order Rates
+**Business Question**: Restoran mana yang memiliki proporsi pesanan berstatus Late tertinggi di antara pesanan berstatus Delivered dan Late, dengan minimal 10 pesanan dalam gabungan kedua status tersebut?
+
+**Analysis Method**: Proporsi pesanan Late dihitung dengan membandingkan jumlah pesanan Late terhadap total pesanan Delivered dan Late pada setiap restoran. Analisis dibatasi pada restoran dengan minimal 10 pesanan dalam gabungan kedua status tersebut.
+
+**Output**: 
+| restaurant_id | total_pesanan | total_pesanan_late | persentase_late |
+|:---|---:|---:|---:|
+| R085 | 31 | 23 | 74.19 |
+| R093 | 31 | 22 | 70.97 |
+| R053 | 26 | 17 | 65.38 |
+| R064 | 31 | 20 | 64.52 |
+| R044 | 25 | 16 | 64.00 |
+
+**Key Insights**:
+- R085 memiliki proporsi pesanan berstatus Late tertinggi, yaitu 74.19% atau 23 dari 31 pesanan berstatus Delivered dan Late, sehingga menempati peringkat pertama di antara restoran yang memenuhi kriteria minimal 10 pesanan.
+- R093 menempati posisi kedua dengan proporsi pesanan Late sebesar 70.97% atau 22 dari 31 pesanan, diikuti R053 sebesar 65.38% atau 17 dari 26 pesanan.
+- R064 dan R044 melengkapi lima restoran dengan proporsi pesanan Late tertinggi, masing-masing sebesar 64.52% (20 dari 31 pesanan) dan 64.00% (16 dari 25 pesanan).
+- Hasil analisis menunjukkan bahwa kelima restoran tersebut memiliki proporsi pesanan Late di atas 60%, sehingga pesanan dari restoran-restoran tersebut perlu diperhatikan lebih lanjut untuk mengetahui penyebab keterlambatannya. Keterlambatan tidak selalu disebabkan oleh restoran, tetapi juga dapat dipengaruhi oleh proses pengiriman atau faktor lainnya.
+
+# Business Recommendations
+Berdasarkan hasil analisis, terdapat beberapa rekomendasi yang dapat menjadi bahan pertimbangan untuk meningkatkan kinerja bisnis platform:
+1. Mempertahankan pelanggan berulang. Pelanggan berulang menyumbang 89,58% dari total pesanan berstatus Delivered dan Late. Platform dapat mempertimbangkan program loyalitas atau penawaran khusus untuk mendorong pelanggan tetap aktif melakukan pemesanan.
+2. Mengevaluasi strategi pengembangan restoran mitra. Restoran dengan rating tertinggi tidak selalu memiliki jumlah pesanan atau nilai transaksi makanan tertinggi. Oleh karena itu, evaluasi kinerja restoran sebaiknya mempertimbangkan beberapa indikator, seperti rating, jumlah pesanan, dan nilai transaksi makanan.
+3. Memanfaatkan performa jenis masakan untuk strategi promosi. Masakan Thai memberikan kontribusi nilai transaksi makanan terbesar, yaitu 22,97%. Temuan ini dapat menjadi pertimbangan dalam menentukan prioritas promosi, dengan membandingkan jumlah pesanan, jumlah restoran, dan nilai transaksi makanan pada setiap jenis masakan.
+4. Meninjau proses pembatalan pesanan. Liverpool memiliki tingkat pembatalan tertinggi sebesar 33,37%. Platform dapat melakukan analisis lanjutan untuk memahami faktor yang menyebabkan pembatalan dan menentukan langkah perbaikan yang sesuai.
+5. Menyelidiki keterlambatan pengiriman. R085 memiliki proporsi pesanan berstatus Late tertinggi sebesar 74,19%. Platform dapat memprioritaskan pemeriksaan proses pemenuhan dan pengiriman pesanan yang terkait dengan restoran tersebut, tanpa langsung menyimpulkan bahwa keterlambatan disebabkan oleh pihak restoran.
+
+# Project Limitations
+- Dataset yang digunakan merupakan data simulasi, sehingga hasil analisis tidak secara langsung menggambarkan kondisi bisnis platform pesan-antar makanan yang sebenarnya.
+- Nilai transaksi makanan dihitung berdasarkan jumlah item dan harga dalam pesanan berstatus Delivered dan Late. Nilai ini tidak merepresentasikan pendapatan bersih atau keuntungan platform.
+
+# Conclusion
+Analisis menggunakan SQL dan PostgreSQL ini memberikan gambaran mengenai kinerja transaksi, perilaku pelanggan, kontribusi restoran dan jenis masakan, serta kondisi operasional pesanan pada platform food delivery. Hasil analisis menunjukkan bahwa pelanggan berulang memberikan kontribusi terbesar terhadap jumlah pesanan berstatus Delivered dan Late, sementara performa restoran berdasarkan rating tidak selalu sejalan dengan jumlah pesanan maupun nilai transaksi makanan. Selain itu, perbedaan tingkat pembatalan antarwilayah dan proporsi pesanan Late pada sejumlah restoran menunjukkan adanya area yang dapat diteliti lebih lanjut. Secara keseluruhan, proyek ini menunjukkan bagaimana SQL dapat digunakan untuk mengolah data relasional, menghitung indikator kinerja bisnis, membandingkan hasil antarsegmen, dan menghasilkan insight yang relevan sebagai dasar pertimbangan pengambilan keputusan bisnis.
